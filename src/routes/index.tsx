@@ -1,61 +1,48 @@
-import { $, component$, useContext } from "@builder.io/qwik";
+import { $, component$ } from "@builder.io/qwik";
 import { type DocumentHead, useNavigate } from "@builder.io/qwik-city";
 import { PokemonImage } from "~/components/pokemon-image";
-import { PokemonGameContext } from "~/context";
+import { usePokemonGame } from "~/hooks/usePokemonGame";
 
 export default component$(() => {
-  const pokemonGameState = useContext(PokemonGameContext);
   const navigate = useNavigate();
 
-  const changePokemonId = $((value: number) => {
-    if (pokemonGameState.pokemonId + value < 0) return;
-
-    pokemonGameState.pokemonId += value;
-  });
+  const {
+    nextPokemon,
+    previousPokemon,
+    rotate,
+    pokemonId,
+    isVisible,
+    showBackImage,
+    toggleVisibility,
+  } = usePokemonGame();
 
   const goToPokemonPage = $(() => {
-    navigate(`/pokemons/${pokemonGameState.pokemonId}`);
+    navigate(`/pokemons/${pokemonId.value}`);
   });
 
   return (
     <>
       <span class="text-2xl">Simple seacher</span>
-      <span class="text-9xl">{pokemonGameState.pokemonId}</span>
+      <span class="text-9xl">{pokemonId.value}</span>
 
       <div onClick$={() => goToPokemonPage()}>
         <PokemonImage
-          pokemonId={pokemonGameState.pokemonId}
-          showBackImage={pokemonGameState.showBackImage}
-          isVisible={pokemonGameState.isVisible}
+          pokemonId={pokemonId.value}
+          showBackImage={showBackImage.value}
+          isVisible={isVisible.value}
         />
       </div>
       <div>
-        <button
-          onClick$={() => changePokemonId(-1)}
-          class="btn btn-primary mr-2"
-        >
-          Last
+        <button onClick$={previousPokemon} class="btn btn-primary mr-2">
+          Previous
         </button>
-        <button
-          onClick$={() => changePokemonId(+1)}
-          class="btn btn-primary mr-2"
-        >
+        <button onClick$={nextPokemon} class="btn btn-primary mr-2">
           Next
         </button>
-        <button
-          class="btn btn-primary mr-2"
-          onClick$={() => {
-            pokemonGameState.showBackImage = !pokemonGameState.showBackImage;
-          }}
-        >
+        <button class="btn btn-primary mr-2" onClick$={rotate}>
           Rotate
         </button>
-        <button
-          class="btn btn-primary"
-          onClick$={() => {
-            pokemonGameState.isVisible = !pokemonGameState.isVisible;
-          }}
-        >
+        <button class="btn btn-primary" onClick$={toggleVisibility}>
           Reveal
         </button>
       </div>
