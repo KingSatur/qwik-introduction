@@ -59,7 +59,7 @@ export default component$(() => {
               key={pokemonData.name}
               class="m-5 flex flex-col justify-center items-center"
             >
-              <PokemonImage pokemonId={pokemonData?.id} />
+              <PokemonImage pokemonId={pokemonData?.id} isVisible={true} />
               <span class="capitalize">{pokemonData.name}</span>
             </div>
           );
