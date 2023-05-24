@@ -16,9 +16,11 @@ export default component$(() => {
   useStyles$(styles);
 
   return (
+    //Here we are providing globally our different context with different task
     <PokemonProvider>
       <Header />
       <main class="flex flex-col items-center justify-center">
+        {/* Same Slot localted in pokemon-provider */}
         <Slot />
       </main>
       <Footer />

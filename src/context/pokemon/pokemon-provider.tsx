@@ -48,5 +48,6 @@ export const PokemonProvider = component$(() => {
   useContextProvider(PokemonGameContext, pokemonGame);
   useContextProvider(PokemonGameListContext, pokemonClientList);
 
+  //Esta parte se me hizo un poco rara, lo importante es, Slot es un objeto global, en ese sentido, este es el mismo slot que tenemos en Layout.tsx
   return <Slot />;
 });
