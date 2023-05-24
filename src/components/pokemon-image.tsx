@@ -38,7 +38,7 @@ export const PokemonImage = component$(
           src={imageUrl.value}
           alt=""
           class={[
-            { hidden: !isImageLoaded.value, "brightness-0": isVisible },
+            { hidden: !isImageLoaded.value, "brightness-0": !isVisible },
             "transition-all",
           ]}
           style={{ width: size || "500px" }}

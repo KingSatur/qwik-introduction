@@ -1,28 +1,18 @@
 import {
   $,
   component$,
+  useContext,
   useOnDocument,
-  useStore,
   useTask$,
   useVisibleTask$,
 } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
 import { PokemonImage } from "~/components/pokemon-image";
-import type { SmallPokemon } from "~/interfaces";
+import { PokemonGameListContext } from "~/context";
 import { getPokemons } from "~/utils";
 
-interface PokemonsState {
-  currentPage: number;
-  pokemons: SmallPokemon[];
-  loading: boolean;
-}
-
 export default component$(() => {
-  const currentState = useStore<PokemonsState>({
-    currentPage: 0,
-    pokemons: [],
-    loading: false,
-  });
+  const currentState = useContext(PokemonGameListContext);
 
   // Executes only on client side
   // useVisibleTask$(async ({ track }) => {
@@ -33,19 +23,39 @@ export default component$(() => {
 
   useTask$(async ({ track }) => {
     track(() => currentState.currentPage);
-    const pokemons = await getPokemons(currentState.currentPage * 10, 30);
-    currentState.pokemons = [...currentState.pokemons, ...pokemons];
-    currentState.loading = false;
+
+    if (
+      (currentState.isLoading && currentState.currentPage >= 1) ||
+      currentState.currentPage === 0
+    ) {
+      const pokemons = await getPokemons(currentState.currentPage * 30, 30);
+      currentState.pokemons = [...currentState.pokemons, ...pokemons];
+      currentState.isLoading = false;
+    }
   });
+
+  // useTask$(async ({ track }) => {
+  //   track(() => currentState.currentPage);
+
+  //   if (currentState.currentPage === 0) {
+  //     const pokemons = await getPokemons(currentState.currentPage * 30, 30);
+  //     currentState.pokemons = [...pokemons];
+  //   }
+  //   if (currentState.currentPage >= 1 ) {
+  //     const pokemons = await getPokemons(currentState.currentPage * 30, 30);
+  //     currentState.pokemons = [...currentState.pokemons, ...pokemons];
+  //   }
+  //   currentState.isLoading = false;
+  // });
 
   useOnDocument(
     "scroll",
-    $((event) => {
+    $(() => {
       const maxScroll = document.body.scrollHeight;
       const currentPosition = window.scrollY + window.innerHeight;
 
-      if (currentPosition + 200 >= maxScroll && !currentState.loading) {
-        currentState.loading = true;
+      if (currentPosition + 50 >= maxScroll && !currentState.isLoading) {
+        currentState.isLoading = true;
         currentState.currentPage++;
       }
     })
@@ -79,7 +89,7 @@ export default component$(() => {
               key={pokemonData.name}
               class="m-5 flex flex-col justify-center items-center"
             >
-              <PokemonImage pokemonId={pokemonData?.id} />
+              <PokemonImage pokemonId={pokemonData?.id} isVisible={true} />
               <span class="capitalize">{pokemonData.name}</span>
             </div>
           );

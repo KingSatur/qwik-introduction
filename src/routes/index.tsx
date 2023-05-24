@@ -1,34 +1,32 @@
-import { $, component$, useSignal } from "@builder.io/qwik";
+import { $, component$, useContext } from "@builder.io/qwik";
 import { type DocumentHead, useNavigate } from "@builder.io/qwik-city";
 import { PokemonImage } from "~/components/pokemon-image";
+import { PokemonGameContext } from "~/context";
 
 export default component$(() => {
-  const pokemonId = useSignal<number>(1);
-  const showBackImage = useSignal<boolean>(false);
-  const isVisible = useSignal<boolean>(false);
+  const pokemonGameState = useContext(PokemonGameContext);
   const navigate = useNavigate();
 
   const changePokemonId = $((value: number) => {
-    if (pokemonId.value + value < 0) return;
+    if (pokemonGameState.pokemonId + value < 0) return;
 
-    pokemonId.value += value;
+    pokemonGameState.pokemonId += value;
   });
 
   const goToPokemonPage = $(() => {
-    console.log("aqui amor");
-    navigate(`/pokemons/${pokemonId.value}`);
+    navigate(`/pokemons/${pokemonGameState.pokemonId}`);
   });
 
   return (
     <>
       <span class="text-2xl">Simple seacher</span>
-      <span class="text-9xl">{pokemonId.value}</span>
+      <span class="text-9xl">{pokemonGameState.pokemonId}</span>
 
       <div onClick$={() => goToPokemonPage()}>
         <PokemonImage
-          pokemonId={pokemonId.value}
-          showBackImage={showBackImage.value}
-          isVisible={isVisible.value}
+          pokemonId={pokemonGameState.pokemonId}
+          showBackImage={pokemonGameState.showBackImage}
+          isVisible={pokemonGameState.isVisible}
         />
       </div>
       <div>
@@ -47,7 +45,7 @@ export default component$(() => {
         <button
           class="btn btn-primary mr-2"
           onClick$={() => {
-            showBackImage.value = !showBackImage.value;
+            pokemonGameState.showBackImage = !pokemonGameState.showBackImage;
           }}
         >
           Rotate
@@ -55,7 +53,7 @@ export default component$(() => {
         <button
           class="btn btn-primary"
           onClick$={() => {
-            isVisible.value = !isVisible.value;
+            pokemonGameState.isVisible = !pokemonGameState.isVisible;
           }}
         >
           Reveal
