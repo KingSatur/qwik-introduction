@@ -4,7 +4,6 @@ import {
   useContext,
   useOnDocument,
   useTask$,
-  useVisibleTask$,
 } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
 import { PokemonImage } from "~/components/pokemon-image";
@@ -69,11 +68,11 @@ export default component$(() => {
       </div>
       <div class="mt-10">
         {/* <button
-          onClick$={() => currentState.currentPage--}
-          class="btn btn-primary mr-2"
-        >
-          Last
-        </button> */}
+            onClick$={() => currentState.currentPage--}
+            class="btn btn-primary mr-2"
+          >
+            Last
+          </button> */}
         <button
           onClick$={() => currentState.currentPage++}
           class="btn btn-primary mr-2"
