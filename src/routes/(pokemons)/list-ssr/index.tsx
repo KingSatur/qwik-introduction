@@ -79,13 +79,13 @@ export default component$(() => {
       <div class="mt-10">
         <Link
           class="btn btn-primary mr-2"
-          href={`/pokemons/list-ssr?offset=${currentOffset.value - 10}`}
+          href={`/list-ssr?offset=${currentOffset.value - 10}`}
         >
           Last
         </Link>
         <Link
           class="btn btn-primary mr-2"
-          href={`/pokemons/list-ssr?offset=${currentOffset.value + 10}`}
+          href={`/list-ssr?offset=${currentOffset.value + 10}`}
         >
           Next
         </Link>
