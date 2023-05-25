@@ -13,6 +13,17 @@
  * the styles in here will be applied to the Document, without any sort of CSS scoping.
  *
  */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/**
+  * WHAT IS THIS FILE?
+  *
+  * Globally applied styles. No matter which components are in the page or matching route,
+  * the styles in here will be applied to the Document, without any sort of CSS scoping.
+  *
+  */
 
 :root {
   --qwik-dark-blue: #006ce9;
@@ -42,12 +53,12 @@ body {
 }
 
 /**
- * WHAT IS THIS FILE?
- *
- * Globally applied styles. No matter which components are in the page or matching route,
- * the styles in here will be applied to the Document, without any sort of CSS scoping.
- *
- */
+  * WHAT IS THIS FILE?
+  *
+  * Globally applied styles. No matter which components are in the page or matching route,
+  * the styles in here will be applied to the Document, without any sort of CSS scoping.
+  *
+  */
 html {
   -webkit-text-size-adjust: 100%;
   -moz-tab-size: 4;
