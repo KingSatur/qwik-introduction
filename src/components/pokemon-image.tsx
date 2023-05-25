@@ -14,7 +14,12 @@ interface Props {
 }
 
 export const PokemonImage = component$(
-  ({ pokemonId, size = 300, showBackImage = false, isVisible }: Props) => {
+  ({
+    pokemonId,
+    size = 300,
+    showBackImage = false,
+    isVisible = true,
+  }: Props) => {
     const isImageLoaded = useSignal<boolean>(false);
 
     const imageUrl = useComputed$(() => {

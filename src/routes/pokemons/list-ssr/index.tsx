@@ -1,4 +1,11 @@
-import { component$, useComputed$ } from "@builder.io/qwik";
+import {
+  $,
+  component$,
+  useComputed$,
+  useSignal,
+  useStore,
+  useVisibleTask$,
+} from "@builder.io/qwik";
 import {
   Link,
   type DocumentHead,
@@ -6,8 +13,10 @@ import {
   useLocation,
 } from "@builder.io/qwik-city";
 import { PokemonImage } from "~/components/pokemon-image";
+import { Modal } from "~/components/shared";
 import type { SmallPokemon } from "~/interfaces";
 import { getPokemons } from "~/utils";
+import { getDataAboutPokemon } from "~/utils/get-response-by-prompt";
 
 export const usePokemonList = routeLoader$<SmallPokemon[]>(
   async ({ query, redirect }) => {
@@ -21,6 +30,36 @@ export const usePokemonList = routeLoader$<SmallPokemon[]>(
 
 export default component$(() => {
   const location = useLocation();
+  const isModalVisible = useSignal(false);
+
+  const modalPokemon = useStore<{
+    pokemonId: number | null;
+    name: string;
+    message: string | null;
+  }>({
+    pokemonId: null,
+    name: "",
+    message: "",
+  });
+
+  const showModal = $((id: number, name: string) => {
+    modalPokemon.pokemonId = id;
+    modalPokemon.name = name;
+    isModalVisible.value = true;
+  });
+
+  const closeModal = $(() => {
+    isModalVisible.value = false;
+    modalPokemon.message = "";
+  });
+
+  useVisibleTask$(async ({ track }) => {
+    track(() => modalPokemon.name);
+
+    if (modalPokemon?.name?.length >= 0) {
+      modalPokemon.message = await getDataAboutPokemon(modalPokemon.name);
+    }
+  });
 
   const currentOffset = useComputed$<number>(() => {
     const offsetUrlParams = new URLSearchParams(location.url.search);
@@ -57,6 +96,7 @@ export default component$(() => {
           return (
             <div
               key={pokemonData.name}
+              onClick$={() => showModal(pokemonData.id, pokemonData.name)}
               class="m-5 flex flex-col justify-center items-center"
             >
               <PokemonImage pokemonId={pokemonData?.id} isVisible={true} />
@@ -65,6 +105,18 @@ export default component$(() => {
           );
         })}
       </div>
+      <Modal
+        isPersistent={false}
+        size="lg"
+        showModal={isModalVisible.value}
+        closeFn={closeModal}
+      >
+        <div q:slot="title">{modalPokemon.name}</div>
+        <div q:slot="content" class="flex flex-col items-center">
+          <PokemonImage pokemonId={modalPokemon.pokemonId!} />
+          <span>{modalPokemon.message || "Asking to OpenAI"}</span>
+        </div>
+      </Modal>
     </>
   );
 });
